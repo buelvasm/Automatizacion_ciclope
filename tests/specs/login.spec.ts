@@ -1,21 +1,22 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { LoginPage } from "../pages/login/login.page";
 
+let loginPage: LoginPage;
+
+test.beforeEach(async ({ page }) => {
+  loginPage = new LoginPage(page);
+  await loginPage.goto();
+});
+
+test.afterEach(async ({ page }) => {
+  await page.close();
+});
+
+// Test usando credenciales (hardcoded)
 test.describe("Login Tests - SQASA Operaciones", () => {
-  let loginPage: LoginPage;
-
-  test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    await loginPage.goto();
-  });
-
-  test.afterEach(async ({ page }) => {
-    await page.close();
-  });
-
-  test("Login con variables quemadas", async ({ page }) => {
-    const email = ""; 
-    const password = ""; 
+  test("Login con variables quemadas", async () => {
+    const email = "";
+    const password = "";
 
     await loginPage.login(email, password);
     await loginPage.verifyLoginSuccess();
@@ -24,19 +25,13 @@ test.describe("Login Tests - SQASA Operaciones", () => {
   });
 });
 
-// Test alternativo usando credenciales de variables de entorno
+// Test usando credenciales desde variables de entorno (.env)
 test.describe("Login con variables de entorno", () => {
-  test("Login con credenciales de .env", async ({ page }) => {
+  test("Login con credenciales de .env", async () => {
+    const email = process.env.SQASA_EMAIL;
+    const password = process.env.SQASA_PASSWORD;
 
-    const loginPage = new LoginPage(page);
-    await loginPage.goto();
-
-    const email = process.env.SQASA_EMAIL || "";
-    const password = process.env.SQASA_PASSWORD || "";
-
-    if (!email || !password) {
-      test.skip();
-    }
+    test.skip(!email || !password, 'Faltan SQASA_EMAIL o SQASA_PASSWORD en .env');
 
     await loginPage.login(email, password);
     await loginPage.verifyLoginSuccess();
