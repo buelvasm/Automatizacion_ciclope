@@ -172,4 +172,53 @@ export class LoginPage {
     await this.page.waitForTimeout(2000);
     await expect(this.elements.messageValidation).toBeVisible({ timeout: 20000 });
   }
+
+  @step("Registro de horas en la hoja de tiempo 6 horas viernes")
+async registerTimeSheetFriday() {
+  await this.page.waitForTimeout(5000);
+  try {
+    await this.elements.buttonTimeSheet.waitFor({ state: 'visible', timeout: 20000 });
+    await this.elements.buttonTimeSheet.click();
+  } catch (error) {
+    await this.page.waitForTimeout(2000);
+    await this.elements.buttonTimeSheet.waitFor({ state: 'visible', timeout: 20000 });
+    await this.elements.buttonTimeSheet.click();
+  }
+
+  await this.page.waitForTimeout(3000);
+  try {
+    await this.elements.buttonAdd.waitFor({ state: 'visible', timeout: 20000 });
+    await this.elements.buttonAdd.click();
+  } catch (error) {
+    await this.page.waitForTimeout(2000);
+    await this.elements.buttonAdd.waitFor({ state: 'visible', timeout: 20000 });
+    await this.elements.buttonAdd.click();
+  }
+  await this.page.waitForTimeout(3000);
+
+  const formattedDate = this.getFormattedDate();
+  await this.elements.inputFecha.waitFor({ state: 'visible', timeout: 15000 });
+  await this.elements.inputFecha.fill(formattedDate);
+  await this.page.waitForTimeout(2000);
+  await this.elements.totalHours.waitFor({ state: 'visible', timeout: 15000 });
+  await this.elements.totalHours.click();
+  await this.page.waitForTimeout(2000);
+  await this.elements.totalHours.click();
+  await this.page.waitForTimeout(2000);
+  await this.elements.totalHours.selectOption(defaultTimeSheetData.totalHoursFriday);
+  await this.page.waitForTimeout(2000);
+  await this.elements.taskSelect.waitFor({ state: 'visible', timeout: 20000 });
+  await this.elements.taskSelect.click();
+  await this.page.waitForTimeout(3000);
+  await this.elements.taskSelect.selectOption(defaultTimeSheetData.taskType);
+  await this.page.waitForTimeout(2000);
+  await this.elements.observations.waitFor({ state: 'visible', timeout: 15000 });
+  await this.elements.observations.click();
+  await this.elements.observations.fill(defaultTimeSheetData.observationsFriday);
+  await this.page.waitForTimeout(2000);
+  await this.elements.saveHours.waitFor({ state: 'visible', timeout: 15000 });
+  await this.elements.saveHours.click();
+  await this.page.waitForTimeout(2000);
+  await expect(this.elements.messageValidation).toBeVisible({ timeout: 20000 });
+}
 }

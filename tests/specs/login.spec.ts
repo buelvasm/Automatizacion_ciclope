@@ -39,3 +39,17 @@ test.describe("Login con variables de entorno", () => {
     await loginPage.registerTimeSheetDailys();
   });
 });
+
+// Test viernes - 6 horas
+test.describe("Login viernes - 6 horas", () => {
+  test("Login viernes con credenciales de .env", async () => {
+    const email = process.env.SQASA_EMAIL;
+    const password = process.env.SQASA_PASSWORD;
+
+    test.skip(!email || !password, 'Faltan SQASA_EMAIL o SQASA_PASSWORD en .env');
+
+    await loginPage.login(email, password);
+    await loginPage.verifyLoginSuccess();
+    await loginPage.registerTimeSheetFriday();
+  });
+});
